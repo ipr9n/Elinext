@@ -1,0 +1,11 @@
+﻿@model TaskElinext.Models.CommentListModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@Html.Partial("_AddComment",new TaskElinext.Models.CommentViewModel())
+
+<h1>Комментарии</h1>
+
+@Html.Partial("_Comments",Model)
+

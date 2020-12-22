@@ -1,0 +1,46 @@
+﻿@model TaskElinext.Models.CommentListModel
+
+@if (Model.Comments.Any(x => x.ParentId == Model.Seed))
+{
+<ul>
+    @foreach (var comment in Model.Comments)
+    {
+        if (comment.ParentId == Model.Seed)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@comment.Username</h5>
+                    @comment.Text
+                    <footer class="blockquote-footer"><cite title="Source Title">@comment.CreateDate</cite></footer>
+                    <button onclick="toggleForm(@comment.Id)" class="btn btn-primary" style="float: right">Reply</button>
+                </div>
+            </div>
+            <br />
+
+            using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "replyform" + comment.Id, style = "display: none;" }))
+            {
+                <input type="hidden" name="ParentId" value="@comment.Id" id="ParentId" />
+
+                <div class="input-group mb-3">
+                    <textarea class="form-control" style="max-width: 100%; min-height: 100px;" placeholder="Write comment" id="text" name="text" aria-label="text" aria-describedby="button-addon2"></textarea>
+                    <div class="input-group-append">
+                        <input class="btn btn-outline-secondary" type="submit" id="button-addon2" value="send" />
+                    </div>
+                </div>
+            }
+
+            TaskElinext.Models.CommentListModel inner = new TaskElinext.Models.CommentListModel
+            {
+                Seed = comment.Id,
+                Comments = Model.Comments
+            };
+            @Html.Partial("_Comments", inner)
+        }
+    }
+</ul>
+}
+<script>
+    function toggleForm(id) {
+        $("#replyform" + id).toggle(500);
+    }
+</script>
